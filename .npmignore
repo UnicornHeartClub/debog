@@ -1,0 +1,7 @@
+src/
+.travis.yml
+yarn.lock
+*.md
+*.json
+LICENSE
+jest.*

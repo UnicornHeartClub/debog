@@ -1,7 +1,7 @@
 {
   "name": "debog",
   "description": "TypeScript decorator to add class performance timing",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "prepare": "npm test",
@@ -15,9 +15,13 @@
   "repository": "github:UnicornHeartClub/debog",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^25.1.2",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.5",
     "uglify-js": "^3.7.7"
+  },
+  "dependencies": {
+    "performance-now": "^2.1.0"
   }
 }
