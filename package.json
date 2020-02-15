@@ -1,0 +1,23 @@
+{
+  "name": "debog",
+  "description": "TypeScript decorator to add class performance timing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "npm test",
+    "prepublishOnly": "npm run build",
+    "build": "tsc && uglifyjs  dist/index.js --compress --mangle -o dist/index.js --source-map \"filename='dist/index.js.map'\"",
+    "test": "jest",
+    "test:dev": "jest --watch"
+  },
+  "types": "dist/index.d.ts",
+  "author": "Unicorn Heart Club",
+  "repository": "github:UnicornHeartClub/debog",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
+    "typescript": "^3.7.5",
+    "uglify-js": "^3.7.7"
+  }
+}
