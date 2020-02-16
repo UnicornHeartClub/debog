@@ -82,7 +82,7 @@ describe('debog', () => {
   })
 
   it('logs when an async class method is invoked', async () => {
-    @debog('*examineMeaningOfLife')
+    @debog('examineMeaningOfLife')
     class TestClass extends ExampleClass {}
 
     const example = new TestClass()
