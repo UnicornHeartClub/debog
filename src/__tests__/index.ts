@@ -1,6 +1,6 @@
 /** @format */
 
-import debog, { asyncDebog } from '../'
+import debog from '../'
 
 /**
  * Example class
@@ -41,58 +41,54 @@ describe('debog', () => {
     log.mockClear()
   })
 
-  describe('debog', () => {
-    it('logs when a class method is invoked', () => {
-      @debog('noopLoop')
-      class TestClass extends ExampleClass {}
+  it('logs when a class method is invoked', () => {
+    @debog('noopLoop')
+    class TestClass extends ExampleClass {}
 
-      const example = new TestClass()
-      example.noopLoop()
+    const example = new TestClass()
+    example.noopLoop()
 
-      expect(log).toHaveBeenCalled()
-    })
-
-    it('returns the original value of the method', () => {
-      @debog('noopLoop')
-      class TestClass extends ExampleClass {}
-
-      const example = new TestClass()
-      const power = example.noopLoop()
-
-      expect(power).toBe(45)
-    })
-
-    it('logs when a threshold is exceeded', () => {
-      @debog(1, 'longLoop')
-      class TestClass extends ExampleClass {}
-
-      const example = new TestClass()
-      example.longLoop()
-
-      expect(log).toHaveBeenCalled()
-    })
-
-    it('does not log when a threshold is not met', () => {
-      @debog(20, 'longLoop')
-      class TestClass extends ExampleClass {}
-
-      const example = new TestClass()
-      example.longLoop()
-
-      expect(log).not.toHaveBeenCalled()
-    })
+    expect(log).toHaveBeenCalled()
   })
 
-  describe('asyncDebog', () => {
-    it('logs when an async class method is invoked', async () => {
-      @asyncDebog('examineMeaningOfLife')
-      class TestClass extends ExampleClass {}
+  it('returns the original value of the method', () => {
+    @debog('noopLoop')
+    class TestClass extends ExampleClass {}
 
-      const example = new TestClass()
-      const life = await example.examineMeaningOfLife()
+    const example = new TestClass()
+    const power = example.noopLoop()
 
-      expect(log).toHaveBeenCalledTimes(1)
-      expect(life).toBe(42)
-    })
+    expect(power).toBe(45)
+  })
+
+  it('logs when a threshold is exceeded', () => {
+    @debog(1, 'longLoop')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    example.longLoop()
+
+    expect(log).toHaveBeenCalled()
+  })
+
+  it('does not log when a threshold is not met', () => {
+    @debog(20, 'longLoop')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    example.longLoop()
+
+    expect(log).not.toHaveBeenCalled()
+  })
+
+  it('logs when an async class method is invoked', async () => {
+    @debog('*examineMeaningOfLife')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    const life = await example.examineMeaningOfLife()
+
+    expect(log).toHaveBeenCalledTimes(1)
+    expect(life).toBe(42)
   })
 })

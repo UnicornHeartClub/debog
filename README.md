@@ -23,15 +23,13 @@ This library uses [TypeScript decorators](https://www.typescriptlang.org/docs/ha
 ## Usage
 
 Import `debog` into a TypeScript file and append your classes with the decorator. Pass the names of any methods you want to profile.
+Simply prepend a `*` before the method name to profile an async method.
 
 ```typescript
 import debog from 'debog'
 
-@debog('longMethod', 'shortMethod')
+@debog('longMethod', 'shortMethod', '*asyncMethod')
 export default class MyClass {
-  /**
-   * Loops a lot
-   */
   longMethod = () => {
     let output = 0
     for (let i = 0; i < 100000; i++) {
@@ -40,9 +38,6 @@ export default class MyClass {
     return output
   }
 
-  /**
-   * Loops a little
-   */
   shortMethod = () => {
     let output = 0
     for (let i = 0; i < 10; i++) {
@@ -50,11 +45,16 @@ export default class MyClass {
     }
     return output
   }
+
+  asyncMethod = async () => new Promise(resolve => {
+    setTimeout(resolve, 1000)
+  })
 }
 
 const example = new MyClass()
 example.shortMethod() // logs "shortMethod took 0ms"
-example.longMethod() // logs "longMethod took 3ms" (you can expect your own numbers here)
+example.longMethod() // logs "longMethod took 3ms"
+example.asyncMethod() // logs "asyncMethod took 1000ms"
 ```
 
 You can alternatively restrict output until a certain threshold is reached. For example, to log when a method takes longer than 5ms:
@@ -62,10 +62,10 @@ You can alternatively restrict output until a certain threshold is reached. For 
 ```typescript
 import debog from 'debog'
 
-@debog(5, 'asyncMethod', 'instantMethod')
+@debog(5, '*waitMethod', 'instantMethod')
 export default class MyClass {
-  asyncMethod = async () => new Promise(resolve => {
-    setTimeout(resolve, 6)
+  waitMethod = async () => new Promise(resolve => {
+    setTimeout(resolve, 10)
   })
 
   instantMethod = () => {
@@ -74,7 +74,7 @@ export default class MyClass {
 }
 
 const example = new MyClass()
-await example.asyncMethod() // logs "waitMethod took 6ms"
+await example.waitMethod() // logs "waitMethod took 10ms"
 example.instantMethod() // logs nothing
 ```
 
