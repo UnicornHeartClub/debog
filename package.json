@@ -2,7 +2,7 @@
   "name": "debog",
   "description": "TypeScript decorator to add class performance timing",
   "version": "0.1.1",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "prepare": "npm test",
     "prepublishOnly": "npm run build",
