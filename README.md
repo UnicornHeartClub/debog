@@ -1,6 +1,13 @@
 # Debog 
 
+![npm](https://img.shields.io/npm/v/debog.svg)
+![david-dm](https://david-dm.org/UnicornHeartClub/debog.svg)
+[![Build Status](https://travis-ci.com/UnicornHeartClub/debog.svg?branch=master)](https://travis-ci.com/UnicornHeartClub/debog)
+
 A simple TypeScript decorator to add performance timing to your class methods.
+
+![minified size](https://badgen.net/bundlephobia/min/debog)
+![minzipped size](https://badgen.net/bundlephobia/minzip/debog)
 
 ## Installation
 
