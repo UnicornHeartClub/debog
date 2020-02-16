@@ -26,7 +26,7 @@ export default function debog(...params: [number | string, ...string[]]) {
       __time = (method: Function, name: string) => (...args: any[]) => {
         const s = now()
         const call = method(...args)
-        if (call instanceof Promise) {
+        if (call instanceof Promise || Promise.resolve(call) === call) {
           return call.then(result => {
             const t = now() - s
             if (t >= threshold) {
