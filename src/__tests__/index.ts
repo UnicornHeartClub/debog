@@ -68,6 +68,16 @@ describe('debog', () => {
     expect(log).toHaveBeenCalled()
   })
 
+  it('does not wrap methods that do not exist', () => {
+    @debog('doop')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+
+    // @ts-ignore
+    expect(example.doop).not.toBeDefined()
+  })
+
   it('returns the original value of the method', () => {
     @debog('noopLoop')
     class TestClass extends ExampleClass {}

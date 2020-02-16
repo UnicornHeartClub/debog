@@ -19,7 +19,9 @@ export default function debog(...params: [number | string, ...string[]]) {
 
         for (let param of params) {
           const method = param as string
-          this[method] = this.__time(this[method], method)
+          if(this[method] !== undefined) {
+            this[method] = this.__time(this[method], method)
+          }
         }
       }
 
