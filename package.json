@@ -15,7 +15,10 @@
   "repository": "github:UnicornHeartClub/debog",
   "license": "MIT",
   "devDependencies": {
+    "@types/bluebird": "^3.5.29",
     "@types/jest": "^25.1.2",
+    "bluebird": "^3.7.2",
+    "es6-promise": "^4.2.8",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.5",

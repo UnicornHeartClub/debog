@@ -2,6 +2,9 @@
 
 import debog from '../'
 
+import Bluebird from 'bluebird'
+import { Promise as ShimPromise } from 'es6-promise'
+
 /**
  * Example class
  *
@@ -24,8 +27,22 @@ class ExampleClass {
     return output
   }
 
-  async examineMeaningOfLife() {
-    return new Promise(resolve => setTimeout(() => resolve(42), 10))
+  // Ensure multiple types of async functions are properly awaited
+  async asyncFunction() {
+    await Promise.resolve('test')
+    return 'async'
+  }
+
+  nativePromise() {
+    return new Promise(resolve => setTimeout(() => resolve('native'), 10))
+  }
+
+  bluebirdPromise() {
+    return new Bluebird(resolve => setTimeout(() => resolve('bluebird'), 10))
+  }
+
+  shimPromise() {
+    return new ShimPromise(resolve => setTimeout(() => resolve('shim'), 10))
   }
 }
 
@@ -49,6 +66,16 @@ describe('debog', () => {
     example.noopLoop()
 
     expect(log).toHaveBeenCalled()
+  })
+
+  it('does not wrap methods that do not exist', () => {
+    @debog('doop')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+
+    // @ts-ignore
+    expect(example.doop).not.toBeDefined()
   })
 
   it('returns the original value of the method', () => {
@@ -82,13 +109,46 @@ describe('debog', () => {
   })
 
   it('logs when an async class method is invoked', async () => {
-    @debog('*examineMeaningOfLife')
+    @debog('asyncFunction')
     class TestClass extends ExampleClass {}
 
     const example = new TestClass()
-    const life = await example.examineMeaningOfLife()
+    const type = await example.asyncFunction()
 
     expect(log).toHaveBeenCalledTimes(1)
-    expect(life).toBe(42)
+    expect(type).toBe('async')
+  })
+
+  it('logs when a native promise method is invoked', async () => {
+    @debog('nativePromise')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    const type = await example.nativePromise()
+
+    expect(log).toHaveBeenCalledTimes(1)
+    expect(type).toBe('native')
+  })
+
+  it('logs when a bluebird promise method is invoked', async () => {
+    @debog('bluebirdPromise')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    const type = await example.bluebirdPromise()
+
+    expect(log).toHaveBeenCalledTimes(1)
+    expect(type).toBe('bluebird')
+  })
+
+  it('logs when a shimmed es6 promise method is invoked', async () => {
+    @debog('shimPromise')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    const type = await example.shimPromise()
+
+    expect(log).toHaveBeenCalledTimes(1)
+    expect(type).toBe('shim')
   })
 })

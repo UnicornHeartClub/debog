@@ -6,7 +6,6 @@
 import now from 'performance-now'
 
 export default function debog(...params: [number | string, ...string[]]) {
-  const asyncRegexp = /^\*/
   const checkThreshold = typeof params[0] === 'number'
   let threshold = 0
   if (checkThreshold) {
@@ -20,32 +19,31 @@ export default function debog(...params: [number | string, ...string[]]) {
 
         for (let param of params) {
           const method = param as string
-          const promise = asyncRegexp.test(method)
-          const methodName = !promise ? method : method.replace(asyncRegexp, '')
-          this[methodName] = !promise
-            ? this.__time(this[methodName], methodName)
-            : this.__asyncTime(this[methodName], methodName)
+          if(this[method] !== undefined) {
+            this[method] = this.__time(this[method], method)
+          }
         }
       }
 
       __time = (method: Function, name: string) => (...args: any[]) => {
         const s = now()
-        const result = method(...args)
-        const t = now() - s
-        if (t >= threshold) {
-          console.log('%c%s took %fms', 'color: red', name, t)
+        const call = method(...args)
+        if (call instanceof Promise || Promise.resolve(call) === call || typeof call.then === 'function') {
+          return call.then(result => {
+            const t = now() - s
+            if (t >= threshold) {
+              console.log('%c%s took %fms', 'color: red', name, t)
+            }
+            return result
+          })
         }
-        return result
-      }
 
-      __asyncTime = (method: Function, name: string) => async (...args: any[]) => {
-        const s = now()
-        const result = await method(...args)
         const t = now() - s
         if (t >= threshold) {
           console.log('%c%s took %fms', 'color: red', name, t)
         }
-        return result
+
+        return call
       }
     }
   }

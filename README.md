@@ -30,12 +30,12 @@ This library uses [TypeScript decorators](https://www.typescriptlang.org/docs/ha
 ## Usage
 
 Import `debog` into a TypeScript file and append your classes with the decorator. Pass the names of any methods you want to profile.
-Simply prepend a `*` before the method name to profile an async method.
+`debog` automatically waits for async methods to resolve before timing!
 
 ```typescript
 import debog from 'debog'
 
-@debog('longMethod', 'shortMethod', '*asyncMethod')
+@debog('longMethod', 'shortMethod', 'asyncMethod')
 export default class MyClass {
   longMethod = () => {
     let output = 0
@@ -69,7 +69,7 @@ You can alternatively restrict output until a certain threshold is reached. For 
 ```typescript
 import debog from 'debog'
 
-@debog(5, '*waitMethod', 'instantMethod')
+@debog(5, 'waitMethod', 'instantMethod')
 export default class MyClass {
   waitMethod = async () => new Promise(resolve => {
     setTimeout(resolve, 10)
