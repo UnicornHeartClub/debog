@@ -5,6 +5,26 @@
  */
 import now from 'performance-now'
 
+/**
+ * Default logger. Prints to browser console.log with red text
+ * @param message = '%s took %fms'
+ * @param args Any number of args to pass to the log function
+ */
+export let logger = (message: string, ...args: any[]) => console.log(`%c${message}`, 'color: red', ...args)
+
+/**
+ * Set a custom logger
+ * @param log Logger function
+ */
+export function init(log: (...args) => void) {
+  logger = log
+}
+
+/**
+ * Default message
+ */
+const message = '%s took %fms'
+
 export default function debog(...params: [number | string, ...string[]]) {
   const checkThreshold = typeof params[0] === 'number'
   let threshold = 0
@@ -32,7 +52,7 @@ export default function debog(...params: [number | string, ...string[]]) {
           return call.then(result => {
             const t = now() - s
             if (t >= threshold) {
-              console.log('%c%s took %fms', 'color: red', name, t)
+              logger(message, name, t)
             }
             return result
           })
@@ -40,9 +60,8 @@ export default function debog(...params: [number | string, ...string[]]) {
 
         const t = now() - s
         if (t >= threshold) {
-          console.log('%c%s took %fms', 'color: red', name, t)
+          logger(message, name, t)
         }
-
         return call
       }
     }
