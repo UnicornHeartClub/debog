@@ -1,6 +1,6 @@
 /** @format */
 
-import debog, { init } from '../'
+import debog from '../'
 
 import Bluebird from 'bluebird'
 import { Promise as ShimPromise } from 'es6-promise'
@@ -154,7 +154,7 @@ describe('debog', () => {
 
   it('allows the user to overwrite the log function', () => {
     const customLogger = jest.fn()
-    init(customLogger)
+    debog.logger = customLogger
 
     @debog('noopLoop')
     class TestClass extends ExampleClass {}

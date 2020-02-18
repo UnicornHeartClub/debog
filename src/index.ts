@@ -6,26 +6,21 @@
 import now from 'performance-now'
 
 /**
- * Default logger. Prints to browser console.log with red text
- * @param message = '%s took %fms'
- * @param args Any number of args to pass to the log function
- */
-export let logger = (message: string, ...args: any[]) => console.log(`%c${message}`, 'color: red', ...args)
-
-/**
- * Set a custom logger
- * @param log Logger function
- */
-export function init(log: (...args) => void) {
-  logger = log
-}
-
-/**
  * Default message
  */
 const message = '%s took %fms'
 
-export default function debog(...params: [number | string, ...string[]]) {
+interface Debog {
+  (...params: [number | string, ...string[]]): any
+  logger: Function
+}
+
+interface Export {
+  default: Debog
+}
+
+const debog: Debog = function debog(this: Export, ...params: [number | string, ...string[]]) {
+  const self = this.default as Debog
   const checkThreshold = typeof params[0] === 'number'
   let threshold = 0
   if (checkThreshold) {
@@ -52,7 +47,7 @@ export default function debog(...params: [number | string, ...string[]]) {
           return call.then(result => {
             const t = now() - s
             if (t >= threshold) {
-              logger(message, name, t)
+              self.logger(message, name, t)
             }
             return result
           })
@@ -60,10 +55,14 @@ export default function debog(...params: [number | string, ...string[]]) {
 
         const t = now() - s
         if (t >= threshold) {
-          logger(message, name, t)
+          self.logger(message, name, t)
         }
         return call
       }
     }
   }
 }
+
+debog.logger = (message: string, ...args: any[]) => console.log(`%c${message}`, 'color: red', ...args)
+
+export default debog
