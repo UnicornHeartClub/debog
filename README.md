@@ -85,12 +85,32 @@ await example.waitMethod() // logs "waitMethod took 10ms"
 example.instantMethod() // logs nothing
 ```
 
+### Output
+
+You are not restricted to using `console.log` as output. In fact, you can
+output any timing call to any destination you want such as statsd, prometheus,
+etc.
+
+Simply override the expose `logger` attribute.
+
+```typescript
+import debog from 'debog'
+
+debog.logger = (timing: number, methodName: string) => {
+  // process information
+  // default: console.log(`%c%d took %sms`, 'color: red', method, timing)
+}
+```
+
 ## API
 
 This library exports one default decorator function, defined as:
 
 ```typescript
-function debog(...params: [number | string, ...string[]]);
+interface Debog {
+  (...params: [number | string, ...string[]]): any
+  logger(timing: number, method: string): void
+}
 ```
 
 ## License

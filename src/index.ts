@@ -5,14 +5,9 @@
  */
 import now from 'performance-now'
 
-/**
- * Default message
- */
-const message = '%s took %fms'
-
-interface Debog {
+export interface Debog {
   (...params: [number | string, ...string[]]): any
-  logger: Function
+  logger(timing: number, methodName: string): void
 }
 
 interface Export {
@@ -33,9 +28,9 @@ const debog: Debog = function debog(this: Export, ...params: [number | string, .
         super(...args)
 
         for (let param of params) {
-          const method = param as string
-          if(this[method] !== undefined) {
-            this[method] = this.__time(this[method], method)
+          const methodName = param as string
+          if(this[methodName] !== undefined) {
+            this[methodName] = this.__time(this[methodName], methodName)
           }
         }
       }
@@ -47,7 +42,7 @@ const debog: Debog = function debog(this: Export, ...params: [number | string, .
           return call.then(result => {
             const t = now() - s
             if (t >= threshold) {
-              self.logger(message, name, t)
+              self.logger(t, name)
             }
             return result
           })
@@ -55,7 +50,7 @@ const debog: Debog = function debog(this: Export, ...params: [number | string, .
 
         const t = now() - s
         if (t >= threshold) {
-          self.logger(message, name, t)
+          self.logger(t, name)
         }
         return call
       }
@@ -63,6 +58,6 @@ const debog: Debog = function debog(this: Export, ...params: [number | string, .
   }
 }
 
-debog.logger = (message: string, ...args: any[]) => console.log(`%c${message}`, 'color: red', ...args)
+debog.logger = (timing: number, methodName: string) => console.log(`%c%d took %sms`, 'color: red', methodName, timing)
 
 export default debog
