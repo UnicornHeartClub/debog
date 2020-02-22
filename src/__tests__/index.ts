@@ -151,4 +151,18 @@ describe('debog', () => {
     expect(log).toHaveBeenCalledTimes(1)
     expect(type).toBe('shim')
   })
+
+  it('allows the user to overwrite the log function', () => {
+    const customLogger = jest.fn()
+    debog.logger = customLogger
+
+    @debog('noopLoop')
+    class TestClass extends ExampleClass {}
+
+    const example = new TestClass()
+    example.noopLoop()
+
+    expect(customLogger).toHaveBeenCalledTimes(1)
+    expect(log).not.toHaveBeenCalled()
+  })
 })

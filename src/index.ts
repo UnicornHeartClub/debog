@@ -5,7 +5,17 @@
  */
 import now from 'performance-now'
 
-export default function debog(...params: [number | string, ...string[]]) {
+export interface Debog {
+  (...params: [number | string, ...string[]]): any
+  logger(timing: number, methodName: string): void
+}
+
+interface Export {
+  default: Debog
+}
+
+const debog: Debog = function debog(this: Export, ...params: [number | string, ...string[]]) {
+  const self = this.default as Debog
   const checkThreshold = typeof params[0] === 'number'
   let threshold = 0
   if (checkThreshold) {
@@ -18,9 +28,9 @@ export default function debog(...params: [number | string, ...string[]]) {
         super(...args)
 
         for (let param of params) {
-          const method = param as string
-          if(this[method] !== undefined) {
-            this[method] = this.__time(this[method], method)
+          const methodName = param as string
+          if(this[methodName] !== undefined) {
+            this[methodName] = this.__time(this[methodName], methodName)
           }
         }
       }
@@ -32,7 +42,7 @@ export default function debog(...params: [number | string, ...string[]]) {
           return call.then(result => {
             const t = now() - s
             if (t >= threshold) {
-              console.log('%c%s took %fms', 'color: red', name, t)
+              self.logger(t, name)
             }
             return result
           })
@@ -40,11 +50,14 @@ export default function debog(...params: [number | string, ...string[]]) {
 
         const t = now() - s
         if (t >= threshold) {
-          console.log('%c%s took %fms', 'color: red', name, t)
+          self.logger(t, name)
         }
-
         return call
       }
     }
   }
 }
+
+debog.logger = (timing: number, methodName: string) => console.log(`%c%d took %sms`, 'color: red', methodName, timing)
+
+export default debog
