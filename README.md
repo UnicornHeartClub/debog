@@ -109,7 +109,7 @@ This library exports one default decorator function, defined as:
 ```typescript
 interface Debog {
   (...params: [number | string, ...string[]]): any
-  logger(timing: number, method: string): void
+  logger(timing: number, methodName: string): void
 }
 ```
 
