@@ -91,7 +91,7 @@ You are not restricted to using `console.log` as output. In fact, you can
 output any timing call to any destination you want such as statsd, prometheus,
 etc.
 
-Simply override the expose `logger` attribute.
+Simply override the exposed `logger` attribute.
 
 ```typescript
 import debog from 'debog'
